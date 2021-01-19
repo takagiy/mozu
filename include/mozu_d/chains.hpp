@@ -13,6 +13,30 @@ namespace mozu::chains {
     }
   }
 
+  auto add(double rhs) {
+    return [=](double x) {
+      return x + rhs;
+    };
+  }
+
+  auto sub(double rhs) {
+    return [=](double x) {
+      return x - rhs;
+    };
+  }
+
+  auto mul(double rhs) {
+    return [=](double x) {
+      return x * rhs;
+    };
+  }
+
+  auto div(double rhs) {
+    return [=](double x) {
+      return x / rhs;
+    };
+  }
+
   generator add(generator one, generator two) {
     while(one.next() && two.next()) {
       co_yield  *one + *two;
