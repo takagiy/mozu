@@ -1,5 +1,6 @@
 #ifndef NEQUATION_MOZU_HPP
 #define NEQUATION_MOZU_HPP
 #include <mozu_d/generator.hpp>
+#include <mozu_d/duration.hpp>
 #include <mozu_d/chains.hpp>
 #endif

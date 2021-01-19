@@ -4,6 +4,7 @@
 
 #include <utility>
 #include <numbers>
+#include <cstddef>
 
 namespace mozu::chains {
   generator konst(double constant) {
@@ -66,6 +67,14 @@ namespace mozu::chains {
   map_t<F> map(F function) {
     return { function };
   }
+
+  auto cut(std::size_t length) {
+    return [=](generator source) -> generator {
+      for(std::size_t i = 0; i < length && source.next(); ++i) {
+        co_yield *source;
+      }
+    };
+  }
 }
 
 namespace mozu::pitches {
@@ -75,8 +84,8 @@ namespace mozu::pitches {
 }
 
 namespace mozu::prelude {
-  using namespace mozu::chains;
-  using namespace mozu::pitches;
+  using namespace chains;
+  using namespace pitches;
 }
 
 namespace mozu {
