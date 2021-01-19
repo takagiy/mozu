@@ -3,7 +3,7 @@ synth
 
 ## Examples
 
-[**click to play↓!**](doc/resouces/sine.mp4)
+[**click to play↓!**](doc/resources/sine.mp4)
 
 ```cpp
 #include <mozu>
@@ -15,7 +15,7 @@ auto main() -> int {
 }
 ```
 
-[**click to play↓!**](doc/resouces/vibrato.mp4)
+[**click to play↓!**](doc/resources/vibrato.mp4)
 
 ```cpp
 #include <mozu>
@@ -28,7 +28,7 @@ auto main() -> int {
 }
 ```
 
-[**click to play↓!**](doc/resouces/quantize.mp4)
+[**click to play↓!**](doc/resources/quantize.mp4)
 
 ```cpp
 #include <mozu>
