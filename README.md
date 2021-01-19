@@ -15,7 +15,7 @@ auto main() -> int {
 }
 ```
 
-[**click to play↓!**](https://imgur.com/a/xqoOjW4)
+[**click to play↓!**](https://imgur.com/a/s8f9vis)
 
 ```cpp
 #include <mozu>
@@ -23,8 +23,8 @@ auto main() -> int {
 using namespace mozu::prelude;
 
 auto main() -> int {
-  auto lfo = hertz(c4() / 100) >> sin >> mul(100);
-  hertz(c4() + std::move(lfo)) >> sin >> mul(30000) >> cut(3_s) >> save("vibrato.wav");
+  auto lfo = hertz(c4() / 20) >> sin >> mul(100);
+  hertz(c4() * 2 + std::move(lfo)) >> sin >> mul(30000) >> cut(3_s) >> save("vibrato.wav");
 }
 ```
 
