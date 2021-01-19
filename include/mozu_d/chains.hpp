@@ -2,6 +2,7 @@
 #define NEQUATION_MOZU_CHAINS_HPP
 #include "./generator.hpp"
 
+#include <iostream>
 #include <utility>
 #include <numbers>
 #include <cstddef>
@@ -80,9 +81,13 @@ namespace mozu::chains {
   struct map_t {
     F function_;
 
-    generator operator()(generator args) {
+    generator operator()(generator&& args) {
+      return apply(function_, std::move(args));
+    }
+
+    generator apply(F function, generator args) {
       while(args.next()) {
-        co_yield function_(*args);
+        co_yield function(*args);
       }
     }
   };
@@ -92,12 +97,22 @@ namespace mozu::chains {
     return { function };
   }
 
-  auto cut(std::size_t length) {
-    return [=](generator source) -> generator {
+  struct cut_t {
+    std::size_t length_;
+
+    generator operator()(generator&& source) {
+      return apply(length_, std::move(source));
+    }
+
+    generator apply(std::size_t length, generator source) {
       for(std::size_t i = 0; i < length && source.next(); ++i) {
         co_yield *source;
       }
-    };
+    }
+  };
+
+  cut_t cut(std::size_t length) {
+    return { length };
   }
 }
 

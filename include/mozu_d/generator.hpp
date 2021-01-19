@@ -10,9 +10,7 @@ namespace mozu {
 struct generator;
 
 template <class F>
-concept Chain =
-  std::invocable<F, generator&&> &&
-  std::convertible_to<std::invoke_result_t<F, generator&&>, generator>;
+concept Chain = std::invocable<F, generator&&>;
 
 template <class F>
 concept DoubleFunction =
@@ -77,7 +75,7 @@ struct generator {
   handle_type handle_;
 };
   
-generator operator>>(generator&& generator, Chain auto chain) {
+auto operator>>(generator&& generator, Chain auto chain) {
   return chain(std::move(generator));
 }
 
@@ -89,7 +87,7 @@ namespace chains {
   map_t<F> map(F function);
 }
 
-generator operator>>(generator&& generator, DoubleFunction auto function) {
+auto operator>>(generator&& generator, DoubleFunction auto function) {
   return std::move(generator) >> chains::map(function);
 }
 }
