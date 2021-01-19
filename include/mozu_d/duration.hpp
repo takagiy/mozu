@@ -3,7 +3,7 @@
 
 namespace mozu::duration {
 size_t secs(long double nsecs) {
-  return nsecs * 441000.;
+  return nsecs * 44100.;
 }
 
 namespace literals {
