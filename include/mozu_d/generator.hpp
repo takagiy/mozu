@@ -4,6 +4,7 @@
 #include <coroutine>
 #include <concepts>
 #include <optional>
+#include <utility>
 
 namespace mozu {
 struct generator;
@@ -12,6 +13,11 @@ template <class F>
 concept Chain =
   std::invocable<F, generator&&> &&
   std::convertible_to<std::invoke_result_t<F, generator&&>, generator>;
+
+template <class F>
+concept DoubleFunction =
+  std::invocable<F, double> &&
+  std::convertible_to<std::invoke_result_t<F, double>, double>;
 
 struct generator {
   struct promise_type {
@@ -71,9 +77,21 @@ struct generator {
   handle_type handle_;
 };
   
-  generator operator>>(const generator& generator, Chain auto chain) {
-    return chain(generator);
-  }
+generator operator>>(generator&& generator, Chain auto chain) {
+  return chain(std::move(generator));
+}
+
+namespace chains {
+  template <DoubleFunction F>
+  struct map_t;
+
+  template <DoubleFunction F>
+  map_t<F> map(F function);
+}
+
+generator operator>>(generator&& generator, DoubleFunction auto function) {
+  return std::move(generator) >> chains::map(function);
+}
 }
 
 #endif

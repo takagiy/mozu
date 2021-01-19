@@ -2,8 +2,8 @@
 #define NEQUATION_MOZU_CHAINS_HPP
 #include "./generator.hpp"
 
+#include <utility>
 #include <numbers>
-#include <cmath>
 
 namespace mozu::chains {
   generator konst(double constant) {
@@ -12,31 +12,31 @@ namespace mozu::chains {
     }
   }
 
-  generator add(const generator& one, const generator& two) {
+  generator add(generator one, generator two) {
     while(one.next() && two.next()) {
       co_yield  *one + *two;
     }
   }
 
-  generator sub(const generator& one, const generator& two) {
+  generator sub(generator one, generator two) {
     while(one.next() && two.next()) {
       co_yield *one - *two;
     }
   }
 
-  generator mul(const generator& one, const generator& two) {
+  generator mul(generator one, generator two) {
     while(one.next() && two.next()) {
       co_yield *one * *two;
     }
   }
 
-  generator div(const generator& one, const generator& two) {
+  generator div(generator one, generator two) {
     while(one.next() && two.next()) {
       co_yield *one / *two;
     }
   }
 
-  generator hertz(const generator& freq) {
+  generator hertz(generator freq) {
     double value = 0.;
 
     while(freq.next()) {
@@ -51,15 +51,27 @@ namespace mozu::chains {
     }
   }
 
-  generator sin(const generator& theta) {
-    while(theta.next()) {
-      co_yield std::sin(*theta);
+  template <DoubleFunction F>
+  struct map_t {
+    F function_;
+
+    generator operator()(generator args) {
+      while(args.next()) {
+        co_yield function_(*args);
+      }
     }
+  };
+
+  template <DoubleFunction F>
+  map_t<F> map(F function) {
+    return { function };
   }
 }
 
 namespace mozu::pitches {
-  inline generator c4 = chains::konst(261.63);
+  generator c4() {
+    return chains::konst(261.63);
+  }
 }
 
 namespace mozu::prelude {
@@ -70,20 +82,20 @@ namespace mozu::prelude {
 namespace mozu {
   generator::generator(double constant) : generator(chains::konst(constant)) {}
 
-  generator operator+(const generator& lhs, const generator& rhs) {
-    return chains::add(lhs, rhs);
+  generator operator+(generator&& lhs, generator&& rhs) {
+    return chains::add(std::move(lhs), std::move(rhs));
   }
 
-  generator operator-(const generator& lhs, const generator& rhs) {
-    return chains::sub(lhs, rhs);
+  generator operator-(generator&& lhs, generator&& rhs) {
+    return chains::sub(std::move(lhs), std::move(rhs));
   }
 
-  generator operator*(const generator& lhs, const generator& rhs) {
-    return chains::mul(lhs, rhs);
+  generator operator*(generator&& lhs, generator&& rhs) {
+    return chains::mul(std::move(lhs), std::move(rhs));
   }
 
-  generator operator/(const generator& lhs, const generator& rhs) {
-    return chains::div(lhs, rhs);
+  generator operator/(generator&& lhs, generator&& rhs) {
+    return chains::div(std::move(lhs), std::move(rhs));
   }
 }
 

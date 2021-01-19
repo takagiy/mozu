@@ -1,10 +1,10 @@
 #include <mozu>
 #include <iostream>
+#include <cmath>
 using namespace mozu::prelude;
 
 auto main() -> int {
-  auto freq = hertz(c4);
-  auto sine = freq >> mozu::chains::sin;
+  auto sine = hertz(c4()) >> sin;
   while(sine.next()) {
     std::cout << *sine << std::endl;
   }
