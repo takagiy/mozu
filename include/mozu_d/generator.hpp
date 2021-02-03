@@ -5,6 +5,7 @@
 #include <concepts>
 #include <optional>
 #include <utility>
+#include <ranges>
 
 namespace mozu {
 struct generator;
@@ -62,6 +63,8 @@ struct generator {
   }
 
   generator(double constant);
+
+  generator(const std::ranges::output_range<double> auto&);
 
   double operator*() const {
     return handle_.promise().value_;

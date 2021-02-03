@@ -6,8 +6,14 @@
 #include <utility>
 #include <numbers>
 #include <cstddef>
+#include <ranges>
+#include <cmath>
 
 namespace mozu::chains {
+  double key_to_freq(double key_number) {
+    return 440. * std::pow(2., (key_number - 69.) / 12.); 
+  }
+
   generator konst(double constant) {
     while(true) {
       co_yield constant;
@@ -59,6 +65,12 @@ namespace mozu::chains {
   generator div(generator one, generator two) {
     while(one.next() && two.next()) {
       co_yield *one / *two;
+    }
+  }
+
+  generator items(std::ranges::output_range<double> auto source) {
+    for(double value : source) {
+      co_yield value;
     }
   }
 
@@ -114,6 +126,26 @@ namespace mozu::chains {
   cut_t cut(std::size_t length) {
     return { length };
   }
+
+  struct stretch_t {
+    std::size_t times_;
+
+    generator operator()(generator&& source) {
+      return apply(times_, std::move(source));
+    }
+
+    generator apply(std::size_t times, generator source) {
+      while(source.next()) {
+        for(std::size_t i = 0; i < times; ++i) {
+          co_yield *source;
+	}
+      }
+    }
+  };
+
+  stretch_t stretch(std::size_t times) {
+    return { times };
+  }
 }
 
 namespace mozu::pitches {
@@ -129,6 +161,8 @@ namespace mozu::prelude {
 
 namespace mozu {
   generator::generator(double constant) : generator(chains::konst(constant)) {}
+
+  generator::generator(const std::ranges::output_range<double> auto&source) : generator(chains::items(source)) {}
 
   generator operator+(generator&& lhs, generator&& rhs) {
     return chains::add(std::move(lhs), std::move(rhs));
