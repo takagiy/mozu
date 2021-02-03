@@ -14,6 +14,13 @@ namespace mozu::chains {
     return 440. * std::pow(2., (key_number - 69.) / 12.); 
   }
 
+  auto rect(double duty) {
+    double threshold = 2 * std::numbers::pi * duty;
+    return [=] (double value) {
+      return value <= threshold ? 1. : 0.;
+    };
+  }
+
   generator konst(double constant) {
     while(true) {
       co_yield constant;
