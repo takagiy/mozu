@@ -96,6 +96,19 @@ namespace mozu::chains {
     }
   }
 
+  generator impulse(generator theta) {
+    if (!theta.next()) {
+      co_return;
+    }
+    double previous = *theta;
+    co_yield 0;
+
+    while(theta.next()) {
+      co_yield *theta < previous ? 1 : 0;
+      previous = *theta;
+    }
+  }
+
   template <DoubleFunction F>
   struct map_t {
     F function_;
