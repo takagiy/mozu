@@ -21,6 +21,13 @@ namespace mozu::chains {
     };
   }
 
+  double tri(double theta) {
+    using std::numbers::pi;
+    return theta <= 0.5 * pi ? theta / (0.5 * pi) :
+	   theta <= 1.5 * pi ? 1. + (0.5 * pi - theta) / (0.5 * pi) :
+	   (theta - 2. * pi) / (0.5 * pi);
+  }
+
   generator konst(double constant) {
     while(true) {
       co_yield constant;
