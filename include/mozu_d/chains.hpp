@@ -28,6 +28,10 @@ namespace mozu::chains {
 	   (theta - 2. * pi) / (0.5 * pi);
   }
 
+  double saw(double theta) {
+    return theta / (2. * std::numbers::pi);
+  }
+
   generator konst(double constant) {
     while(true) {
       co_yield constant;
